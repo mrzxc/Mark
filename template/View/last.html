@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+</head>
+<body>
+    <div id="main" style="width: 600px; height: 600px; position: absolute; left: 50%; top: 50%; margin-left: -300px; margin-top: -300px;">
+
+    </div>
+</body>
+<script src="http://127.0.0.1:8080/Code/View/js/echarts.common.min.js"></script>
+<script>
+    var myChart = echarts.init(document.getElementById("main"));
+    var option = {
+        title: {
+            text: '网页设计大赛最终得分'
+        },
+        tooltip: {},
+        legend: {
+            data:["{$team1}", "{$team2}", "{$team3}", "{$team4}", "{$team5}", "{$team6}"]
+        },
+        xAxis: {
+
+            data: ["{$team1}", "{$team2}", "{$team3}", "{$team4}", "{$team5}", "{$team6}"]
+        },
+        yAxis: {
+            min: 0,
+            max: 100
+        },
+        series: [{
+            name: '总分',
+            type: 'bar',
+            label: {
+                normal: {
+                    show: true,
+                    position: 'top'
+                }
+            },
+            data: [{
+                value: 0,
+                itemStyle: {
+                    normal: {
+                        color: 'rgb(219, 69, 32)'
+                    }
+                }
+            }, {
+                value: 0,
+                itemStyle: {
+                    normal: {
+                        color: 'rgb(255, 83, 0)'
+                    }
+                }
+            }, {
+                value: 0,
+                itemStyle: {
+                    normal: {
+                        color: 'rgb(247, 68, 97)'
+                    }
+                }
+            }, {
+                value: 0,
+                itemStyle: {
+                    normal: {
+                        color: 'rgb(64, 116, 52)'
+                    }
+                }
+            }, {
+                value: 0,
+                itemStyle: {
+                    normal: {
+                        color: 'rgb(0, 90, 171)'
+                    }
+                }
+            }, {
+                value: 0,
+                itemStyle: {
+                    normal: {
+                        color: 'rgb(78, 29, 76)'
+                    }
+                }
+            }]
+        }]
+    };
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "http://127.0.0.1:8080/Code/index.php/show/final", true);
+    xhr.send(null);
+    xhr.onreadystatechange = function() {
+        if(xhr.readyState == 4) {
+            if((xhr.status >= 200 && xhr.status <= 300) || xhr.status === 304) {
+                option.series[0].data.map(function(data, index) {
+                    data.value = JSON.parse(xhr.responseText)[index];
+                });
+                myChart.setOption(option);
+            }
+        }
+    }
+</script>
+</html>

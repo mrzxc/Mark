@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>天津理工大学第三届网页设计大赛打分</title>
+    <style>
+        body {
+            margin: 0px;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        h2 {
+            text-align: center;
+            font-size: 40px;
+        }
+        body > div {
+            margin: 50px 20px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #EAEAEA;
+        }
+        body > div > span {
+            vertical-align: 11px;
+            width: 156px;
+            display: inline-block;
+        }
+        body > div > div {
+            margin-left: 5px;
+            display: inline-block;
+            background: url("http://127.0.0.1:8080/Code/View/img/grey.jpg") no-repeat;
+            background-size: cover;
+            width: 550px;
+            height: 50px;
+            position: relative;
+        }
+        .orange {
+            background: url("http://127.0.0.1:8080/Code/View/img/orange.jpg") no-repeat;
+            background-size: cover;
+            /*width: 55px;*/
+            height: 50px;
+            position: absolute;
+            left: 0px;
+            z-index: 20;
+        }
+        #bottom {
+            border-bottom: 0px;
+            text-align: center;
+            font-size: 40px;
+            display: block;
+            margin-bottom: 0px;
+        }
+        #bottom span {
+            display: inline;
+        }
+        button {
+            padding: 20px 30px;
+            font-size: 20px;
+            color: white;
+            background: rgb(255, 137, 0);
+            border: 0px;
+            border-radius: 4px;
+            outline: none;
+            margin-left: 320px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2 id="{$id}" data-id="{$ipadid}">
+        {$teamname}
+    </h2>
+    <div id="content">
+        <span>
+            创意与内容设计(30%)
+        </span>
+        <div class="grey">
+            <div class="orange">
+
+            </div>
+        </div>
+    </div>
+    <div id="tech">
+        <span>
+            技术(50%)
+        </span>
+        <div class="grey">
+            <div class="orange">
+
+            </div>
+        </div>
+    </div>
+    <div id="strategy">
+        <span>
+            推广策略(15%)
+        </span>
+        <div class="grey">
+            <div class="orange">
+
+            </div>
+        </div>
+    </div>
+    <div id="practicability">
+        <span>
+            实用性(5%)
+        </span>
+        <div class="grey">
+            <div class="orange">
+
+            </div>
+        </div>
+    </div>
+    <div id="bottom">
+        <span class="total">
+            总分:0分
+        </span>
+    </div>
+    <button>
+        点击提交
+    </button>
+</body>
+<script>
+    var total = 0;
+    var content = 0;
+    var tech = 0;
+    var strategy = 0;
+    var practicability = 0;
+    [].slice.call(document.querySelectorAll(".grey")).map(function(data) {
+        data.addEventListener("touchstart", function (event) {
+            console.log(Math.ceil((event.touches[0].pageX - 185) / 55));
+            event.currentTarget.querySelector(".orange").style.width = (Math.ceil((event.touches[0].pageX - 185) / 55) * 55) + "px";
+            if((event.currentTarget.parentNode.id) === "content") {
+                content = Math.ceil((event.touches[0].pageX - 185) / 55) * 3;
+                total = content + tech + strategy + practicability;
+                document.querySelector(".total").textContent = "总分:" + total + "分";
+            }
+            if((event.currentTarget.parentNode.id) === "tech") {
+                tech = Math.ceil((event.touches[0].pageX - 185) / 55) * 5;
+                total = content + tech + strategy + practicability;
+                document.querySelector(".total").textContent = "总分:" + total + "分";
+            }
+            if((event.currentTarget.parentNode.id) === "strategy") {
+                strategy = Math.ceil((event.touches[0].pageX - 185) / 55) * 1.5;
+                total = content + tech + strategy + practicability;
+                document.querySelector(".total").textContent = "总分:" + total + "分";
+            }
+            if((event.currentTarget.parentNode.id) === "practicability") {
+                practicability = Math.ceil((event.touches[0].pageX - 185) / 55) * 0.5;
+                total = content + tech + strategy + practicability;
+                document.querySelector(".total").textContent = "总分:" + total + "分";
+            }
+        }, false);
+    });
+    document.querySelector("button").addEventListener("click", function() {
+        console.log(total);
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://127.0.0.1:8080/Code/index.php/index/dataIn", true);
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.send("grade=" + total + "&id=" + document.querySelector("h2").id);
+        xhr.onreadystatechange = function() {
+            if(xhr.readyState === 4) {
+                if((xhr.status >= 200 && xhr.status <= 300) || xhr.status === 304) {
+                    alert("发送成功");
+                    location.href = "http://127.0.0.1:8080/Code/index.php/index/index/" + document.querySelector("h2").id;
+                }
+            }
+            console.log(xhr.readyState);
+            console.log(xhr.status);
+        }
+    }, false);
+</script>
+</html>
